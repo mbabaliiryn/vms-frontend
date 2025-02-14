@@ -15,6 +15,7 @@ import {inspectionsApi} from "@/app/api";
 import {CreateInspectionChecklistInput, CheckStatus} from "@/types";
 import * as Yup from "yup";
 import axios from "axios";
+import {useRouter} from "next/navigation"
 
 interface ApiResponse {
     success: boolean;
@@ -22,6 +23,7 @@ interface ApiResponse {
 }
 
 const InspectionChecklistPage = () => {
+    const router = useRouter();
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const [checklistData, setChecklistData] = useState({
@@ -166,6 +168,8 @@ const InspectionChecklistPage = () => {
             const response = (await inspectionsApi.createInspectionChecklist(dataToSubmit) as ApiResponse);
             if (response.success) {
                 toast.success("Inspection submitted successfully!");
+
+                router.push("/operations/inspections");
             } else {
                 toast.error(response.message);
             }
