@@ -20,9 +20,11 @@ import {
     Linkedin,
     ChevronRight,
 } from "lucide-react";
+import {useAuth} from "@/hooks/useAuth";
 
 export default function LandingPage() {
     const router = useRouter();
+    useAuth();
 
     const features = [
         {

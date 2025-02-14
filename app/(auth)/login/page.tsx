@@ -19,6 +19,7 @@ import {
 } from "react-icons/ai";
 import Cookies from "js-cookie";
 import {useRouter} from "next/navigation";
+import {useAuth} from "@/hooks/useAuth";
 
 const loginSchema = yup.object().shape({
     phoneNumber: yup
@@ -32,6 +33,7 @@ const loginSchema = yup.object().shape({
 });
 
 const LoginPage = () => {
+    useAuth();
     const router = useRouter();
     const [formData, setFormData] = useState({
         phoneNumber: "",
@@ -68,7 +70,7 @@ const LoginPage = () => {
                 description: `Welcome back! ${user?.firstName || ""}`,
             });
 
-            router.push("/dashboard");
+            router.replace("/dashboard");
         } catch (err: unknown) {
             if (err instanceof ValidationError) {
                 const newErrors: Record<string, string> = {};

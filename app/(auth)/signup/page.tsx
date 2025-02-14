@@ -13,6 +13,7 @@ import {RegisterInput} from "@/types";
 import {motion} from "framer-motion";
 import {AiOutlineUser, AiOutlinePhone, AiOutlineLock} from "react-icons/ai";
 import {useRouter} from "next/navigation";
+import {useAuth} from "@/hooks/useAuth";
 
 const signupSchema = yup.object().shape({
     firstName: yup.string().required("First name is required"),
@@ -28,6 +29,7 @@ const signupSchema = yup.object().shape({
 });
 
 const SignUpPage = () => {
+    useAuth();
     const router = useRouter();
     const [formData, setFormData] = useState({
         firstName: "",
@@ -61,7 +63,7 @@ const SignUpPage = () => {
                 description: `Welcome, ${formData.firstName}! Your account has been created. Please log in to continue.`,
             });
 
-            router.push("/login");
+            router.replace("/login");
         } catch (err: unknown) {
             if (err instanceof ValidationError) {
                 const newErrors: Record<string, string> = {};
