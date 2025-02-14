@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import SidebarItem from "@/components/Sidebar/SidebarItem";
-// import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import {
     FiHome,
@@ -15,6 +14,8 @@ import {
     FiLogOut,
     FiX,
 } from "react-icons/fi";
+import useAuth from "@/hooks/useAuth";
+import {toast} from "sonner"
 
 interface SidebarProps {
     sidebarOpen: boolean;
@@ -99,6 +100,13 @@ const menuGroups: { name: string; menuItems: MenuItem[] }[] = [
 
 const Sidebar: React.FC<SidebarProps> = ({sidebarOpen, setSidebarOpen}) => {
     const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+    const {logout} = useAuth();
+
+    const handleLogout = () => {
+        logout();
+
+        toast.success("Signed out successfully!");
+    }
 
     return (
         <>
@@ -160,7 +168,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarOpen, setSidebarOpen}) => {
                 <div className="p-6 border-t border-gray-700">
                     <button
                         className="flex w-full items-center justify-center gap-3 rounded-lg bg-gray-200 px-4 py-2 text-gray-900 transition hover:bg-red-400 hover:text-white"
-                        onClick={() => console.log("Logging out...")}
+                        onClick={handleLogout}
                     >
                         <FiLogOut size={20}/> Logout
                     </button>

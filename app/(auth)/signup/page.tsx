@@ -243,7 +243,8 @@ const SignUpPage = () => {
                         </form>
                         <p className="text-center text-gray-600 text-sm mt-6">
                             Already have an account?{" "}
-                            <span className="text-orange-500 cursor-pointer hover:underline">
+                            <span className="text-orange-500 cursor-pointer hover:underline"
+                                  onClick={() => router.push("/login")}>
                 Log in
               </span>
                         </p>

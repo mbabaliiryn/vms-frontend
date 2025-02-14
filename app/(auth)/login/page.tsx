@@ -231,7 +231,8 @@ const LoginPage = () => {
                         </form>
                         <p className="text-center text-gray-600 text-sm mt-6">
                             Don&apos;t have an account?{" "}
-                            <span className="text-orange-500 cursor-pointer hover:underline">
+                            <span className="text-orange-500 cursor-pointer hover:underline"
+                                  onClick={() => router.push("/register")}>
                 Sign up
               </span>
                         </p>
