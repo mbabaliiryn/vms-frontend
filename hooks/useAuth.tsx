@@ -13,7 +13,7 @@ export const useAuth = () => {
     const logout = useCallback(() => {
         Cookies.remove("token");
         Cookies.remove("user");
-        router.push("/");
+        router.push("/login");
     }, [router]);
 
     const checkTokenValidity = useCallback(() => {
@@ -43,7 +43,7 @@ export const useAuth = () => {
                 router.push("/dashboard");
             }
         } else {
-            logout();
+            return;
         }
 
         const interval = setInterval(() => {
