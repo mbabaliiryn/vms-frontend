@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL!}/auth`;
+const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL!}/register`;
 
 class AuthApi {
   signup = async (userData: RegisterInput) => {
