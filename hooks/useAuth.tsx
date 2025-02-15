@@ -13,7 +13,7 @@ export const useAuth = () => {
     const logout = useCallback(() => {
         Cookies.remove("token");
         Cookies.remove("user");
-        router.push("/login");
+        router.push("/");
     }, [router]);
 
     const checkTokenValidity = useCallback(() => {
