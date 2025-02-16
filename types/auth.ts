@@ -1,3 +1,5 @@
+import { Branch } from "./branch";
+
 export interface RegisterInput {
   phoneNumber: string;
   password: string;
@@ -27,4 +29,5 @@ export interface User {
   lastName: string;
   phoneNumber: string;
   role: Role;
+  branch: Branch;
 }

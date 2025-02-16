@@ -160,12 +160,19 @@ const CreateBranchPage = () => {
         } else if (axios.isAxiosError(err) && err.response) {
           console.error("Full API error response:", err.response.data);
 
-          const apiError = err.response.data as { message?: string; success?: boolean };
+          const apiError = err.response.data as {
+            message?: string;
+            success?: boolean;
+          };
 
           toast.error("Branch creation failed", {
             description: apiError.message || "An unknown error occurred.",
           });
-        } else if (typeof err === "object" && err !== null && "message" in err) {
+        } else if (
+          typeof err === "object" &&
+          err !== null &&
+          "message" in err
+        ) {
           const errorObj = err as { message: string; success?: boolean };
 
           toast.error("Branch creation failed", {

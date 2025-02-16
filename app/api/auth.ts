@@ -82,9 +82,20 @@ class AuthApi {
     }
   };
 
-  logout = () => {
-    Cookies.remove("token");
-    Cookies.remove("user");
+  deleteUser = async (userId: string) => {
+    try {
+      const token = Cookies.get("token");
+      const response = await axios.delete(`${API_URL}/delete-user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: { userId },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   };
 
   //   forgotPassword = async (email: string) => {
