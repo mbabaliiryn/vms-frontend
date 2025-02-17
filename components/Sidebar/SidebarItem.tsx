@@ -1,8 +1,9 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
-import SidebarDropdown from "@/components/Sidebar/SidebarDropdown";
-import { usePathname } from "next/navigation";
 import { FiChevronDown } from "react-icons/fi";
+import { usePathname } from "next/navigation";
 
 interface MenuItem {
   icon?: React.ReactNode;
@@ -13,28 +14,36 @@ interface MenuItem {
 
 interface SidebarItemProps {
   item: MenuItem;
-  pageName: string;
-  setPageName: (name: string) => void;
+  isDropdownOpen: boolean;
+  toggleDropdown: (label: string) => void;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
   item,
-  pageName,
-  setPageName,
+  isDropdownOpen,
+  toggleDropdown,
 }) => {
   const pathname = usePathname();
+  const [localDropdowns, setLocalDropdowns] = useState<Record<string, boolean>>(
+    {}
+  );
 
-  const isActive = (menuItem: MenuItem): boolean => {
-    if (menuItem.route === pathname) return true;
-    return menuItem.children?.some((child) => isActive(child)) || false;
-  };
-
-  const isItemActive = isActive(item);
-  const isDropdownOpen = pageName === item.label.toLowerCase();
+  const isActive = (menuItem: MenuItem): boolean =>
+    menuItem.route === pathname ||
+    menuItem.children?.some((child) => isActive(child)) ||
+    false;
 
   const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!item.route) e.preventDefault();
-    setPageName(isDropdownOpen ? "" : item.label.toLowerCase());
+    toggleDropdown(item.label);
+  };
+
+  const toggleNestedDropdown = (label: string) => {
+    setLocalDropdowns((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
   };
 
   return (
@@ -42,32 +51,45 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       <Link
         href={item.route || "#"}
         onClick={handleClick}
-        className={`flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all duration-300 ease-in-out ${
-          isItemActive
-            ? "bg-gray-900 text-white dark:bg-meta-4"
-            : "text-gray-300 hover:bg-gray-800"
-        }`}
+        className={`group flex items-center gap-3 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300 ease-in-out
+          ${
+            isActive(item)
+              ? "bg-orange-50 text-orange-600"
+              : "text-gray-600 hover:bg-orange-50/50 hover:text-orange-500"
+          }`}
       >
-        {item.icon}
-        <span className="flex-grow">{item.label}</span>
-
+        {item.icon && (
+          <span
+            className={`transition-colors duration-200 ${
+              isActive(item)
+                ? "text-orange-500"
+                : "text-gray-400 group-hover:text-orange-400"
+            }`}
+          >
+            {item.icon}
+          </span>
+        )}
+        <span className="flex-grow text-sm">{item.label}</span>
         {item.children && (
           <FiChevronDown
-            className={`transition-transform duration-300 ${
+            className={`h-4 w-4 transition-transform duration-300 ${
               isDropdownOpen ? "rotate-180" : ""
-            }`}
+            } ${isActive(item) ? "text-orange-500" : "text-gray-400"}`}
           />
         )}
       </Link>
 
-      {item.children && (
-        <div
-          className={`overflow-hidden transition-[max-height] duration-300 ${
-            isDropdownOpen ? "max-h-96" : "max-h-0"
-          }`}
-        >
-          <SidebarDropdown item={item.children} />
-        </div>
+      {item.children && isDropdownOpen && (
+        <ul className="mt-1 flex flex-col gap-1 overflow-hidden pl-6">
+          {item.children.map((child, index) => (
+            <SidebarItem
+              key={index}
+              item={child}
+              isDropdownOpen={!!localDropdowns[child.label]}
+              toggleDropdown={toggleNestedDropdown}
+            />
+          ))}
+        </ul>
       )}
     </li>
   );

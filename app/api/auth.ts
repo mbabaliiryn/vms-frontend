@@ -1,6 +1,11 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { RegisterInput, LoginInput, AssignRoleInput } from "@/types";
+import {
+  RegisterInput,
+  RegisterAdminInput,
+  LoginInput,
+  AssignRoleInput,
+} from "@/types";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -18,7 +23,7 @@ class AuthApi {
     }
   };
 
-  adminSignup = async (userData: RegisterInput) => {
+  adminSignup = async (userData: RegisterAdminInput) => {
     try {
       const response = await axios.post(`${API_URL}/register-admin`, userData);
 

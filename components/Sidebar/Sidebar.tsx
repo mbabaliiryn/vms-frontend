@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import SidebarItem from "@/components/Sidebar/SidebarItem";
@@ -5,14 +7,20 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import {
   FiHome,
   FiUsers,
-  FiSettings,
   FiDatabase,
-  FiTool,
   FiTruck,
   FiClipboard,
   FiBriefcase,
   FiLogOut,
   FiX,
+  FiList,
+  FiUserPlus,
+  // FiShield,
+  FiMapPin,
+  FiPlusCircle,
+  FiTool,
+  FiFileText,
+  FiActivity,
 } from "react-icons/fi";
 import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -47,17 +55,37 @@ const menuGroups: { name: string; menuItems: MenuItem[] }[] = [
         icon: <FiUsers size={18} />,
         label: "Users",
         children: [
-          { label: "All Users", route: "/admin/users" },
-          { label: "Add User", route: "/admin/users/create" },
-          { label: "Manage Roles", route: "/admin/users/roles" },
+          {
+            icon: <FiList size={16} />,
+            label: "All Users",
+            route: "/admin/users",
+          },
+          {
+            icon: <FiUserPlus size={16} />,
+            label: "Add User",
+            route: "/admin/users/create",
+          },
+          // {
+          //   icon: <FiShield size={16} />,
+          //   label: "Manage Roles",
+          //   route: "/admin/users/roles",
+          // },
         ],
       },
       {
         icon: <FiDatabase size={18} />,
-        label: "Branches",
+        label: "Garages",
         children: [
-          { label: "All Branches", route: "/admin/branches" },
-          { label: "Add Branch", route: "/admin/branches/create" },
+          {
+            icon: <FiMapPin size={16} />,
+            label: "All Garages",
+            route: "/admin/garages",
+          },
+          {
+            icon: <FiPlusCircle size={16} />,
+            label: "Add Garage",
+            route: "/admin/garages/create",
+          },
         ],
       },
     ],
@@ -79,82 +107,112 @@ const menuGroups: { name: string; menuItems: MenuItem[] }[] = [
         icon: <FiClipboard size={18} />,
         label: "Inspections",
         children: [
-          { label: "All Inspections", route: "/operations/inspections" },
-          { label: "New Inspection", route: "/operations/inspections/create" },
+          {
+            icon: <FiTool size={16} />,
+            label: "Vehicle Inspections",
+            children: [
+              {
+                icon: <FiList size={16} />,
+                label: "All Inspections",
+                route: "/operations/inspections/vehicles",
+              },
+              {
+                icon: <FiFileText size={16} />,
+                label: "New Inspection",
+                route: "/operations/inspections/vehicles/create",
+              },
+            ],
+          },
+          {
+            icon: <FiActivity size={16} />,
+            label: "Garage Inspections",
+            children: [
+              {
+                icon: <FiList size={16} />,
+                label: "All Inspections",
+                route: "/operations/inspections/garages",
+              },
+              {
+                icon: <FiFileText size={16} />,
+                label: "New Inspection",
+                route: "/operations/inspections/garages/create",
+              },
+            ],
+          },
         ],
       },
-      {
-        icon: <FiTool size={18} />,
-        label: "Service History",
-        route: "/operations/service-history",
-      },
-    ],
-  },
-  {
-    name: "SETTINGS",
-    menuItems: [
-      { icon: <FiSettings size={18} />, label: "Settings", route: "/settings" },
     ],
   },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
-  const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+  const [openDropdowns, setOpenDropdowns] = useLocalStorage<
+    Record<string, boolean>
+  >("openDropdowns", {});
   const { logout } = useAuth();
 
   const handleLogout = () => {
     logout();
+    setTimeout(() => {
+      toast.success("Signed out successfully!");
+    }, 1000);
+  };
 
-    toast.success("Signed out successfully!");
+  const toggleDropdown = (label: string) => {
+    setOpenDropdowns((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
   };
 
   return (
     <>
-      {/* Overlay for mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 transition-opacity lg:hidden"
+          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* <ClickOutside onClick={() => setSidebarOpen(false)}> */}
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col bg-gray-900 text-white shadow-lg transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col bg-white shadow-lg transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Sidebar Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-700">
-          <Link href="/" className="text-xl font-bold text-white">
-            AutoCare Hub
+        {/* Header */}
+        <div className="flex items-center justify-between bg-gradient-to-r from-orange-50 to-orange-100 px-8 py-5">
+          <Link
+            href="/dashboard"
+            className="text-xl font-bold text-orange-600 hover:text-orange-700 transition-colors"
+          >
+            NAGOA
           </Link>
           <button
-            onClick={(event) => {
-              event.stopPropagation();
+            onClick={(e) => {
+              e.stopPropagation();
               setSidebarOpen(false);
             }}
-            className="p-2 text-gray-400 transition hover:text-white lg:hidden"
+            className="lg:hidden p-2 text-orange-500 transition-colors hover:text-orange-600"
           >
             <FiX size={24} />
           </button>
         </div>
 
-        {/* Sidebar Menu */}
-        <div className="flex flex-col flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+        {/* Menu Section */}
+        <div className="flex flex-1 flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-gray-50">
           <nav className="mt-4 px-4 lg:px-6">
             {menuGroups.map((group, groupIndex) => (
               <div key={groupIndex} className="mb-6">
-                <h3 className="mb-3 ml-4 text-xs font-semibold uppercase text-gray-400">
+                <h3 className="mb-3 ml-4 text-xs font-semibold uppercase tracking-wider text-orange-500">
                   {group.name}
                 </h3>
-                <ul className="space-y-2">
+                <ul className="space-y-1">
                   {group.menuItems.map((menuItem, menuIndex) => (
                     <SidebarItem
                       key={menuIndex}
                       item={menuItem}
-                      pageName={pageName}
-                      setPageName={setPageName}
+                      isDropdownOpen={!!openDropdowns[menuItem.label]}
+                      toggleDropdown={toggleDropdown}
                     />
                   ))}
                 </ul>
@@ -163,17 +221,17 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           </nav>
         </div>
 
-        {/* Logout Button - Stays Fixed at the Bottom */}
-        <div className="p-6 border-t border-gray-700">
+        {/* Logout Section */}
+        <div className="border-t border-gray-100 bg-gray-50 p-6">
           <button
-            className="flex w-full items-center justify-center gap-3 rounded-lg bg-gray-200 px-4 py-2 text-gray-900 transition hover:bg-red-400 hover:text-white"
+            className="flex w-full items-center justify-center gap-3 rounded-lg bg-orange-50 px-4 py-2.5 text-orange-600 transition-all hover:bg-orange-500 hover:text-white hover:shadow-md active:transform active:scale-95"
             onClick={handleLogout}
           >
-            <FiLogOut size={20} /> Logout
+            <FiLogOut size={18} />
+            <span className="font-medium">Logout</span>
           </button>
         </div>
       </aside>
-      {/* </ClickOutside> */}
     </>
   );
 };

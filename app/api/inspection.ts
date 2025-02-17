@@ -1,10 +1,14 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import {
-  CreateInspectionChecklistInput,
-  UpdateInspectionChecklistInput,
-  GetInspectionChecklistByIdInput,
-  DeleteInspectionChecklistInput,
+  CreateVehicleInspectionChecklistInput,
+  UpdateVehicleInspectionChecklistInput,
+  GetVehicleInspectionChecklistByIdInput,
+  DeleteVehicleInspectionChecklistInput,
+  CreateGarageInspectionChecklistInput,
+  UpdateGarageInspectionChecklistInput,
+  GetGarageInspectionChecklistByIdInput,
+  DeleteGarageInspectionChecklistInput,
 } from "@/types";
 
 const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/business/inspections`;
@@ -18,14 +22,8 @@ class InspectionsApi {
   private async request<T>(
     method: string,
     url: string,
-    data?:
-      | CreateInspectionChecklistInput
-      | UpdateInspectionChecklistInput
-      | undefined,
-    params?:
-      | GetInspectionChecklistByIdInput
-      | DeleteInspectionChecklistInput
-      | undefined
+    data?: object,
+    params?: object
   ): Promise<T> {
     try {
       const response = await axios({
@@ -50,24 +48,41 @@ class InspectionsApi {
     }
   }
 
-  createInspectionChecklist = (
-    inspectionChecklistData: CreateInspectionChecklistInput
-  ) => this.request("POST", `${API_URL}`, inspectionChecklistData);
+  // Vehicle Inspection APIs
+  createVehicleInspectionChecklist = (
+    data: CreateVehicleInspectionChecklistInput
+  ) => this.request("POST", `${API_URL}/vehicles`, data);
 
-  updateInspectionChecklist = (
-    inspectionChecklistData: UpdateInspectionChecklistInput
-  ) => this.request("PUT", `${API_URL}`, inspectionChecklistData);
+  updateVehicleInspectionChecklist = (
+    data: UpdateVehicleInspectionChecklistInput
+  ) => this.request("PUT", `${API_URL}/vehicles`, data);
 
   getAllInspectionChecklists = () => this.request("GET", `${API_URL}`);
 
-  getInspectionChecklistById = (
-    inspectionChecklistData: GetInspectionChecklistByIdInput
-  ) =>
-    this.request("GET", `${API_URL}/find`, undefined, inspectionChecklistData);
+  getVehicleInspectionChecklistById = (
+    data: GetVehicleInspectionChecklistByIdInput
+  ) => this.request("GET", `${API_URL}/vehicles/find`, undefined, data);
 
-  deleteInspectionChecklist = (
-    inspectionChecklistData: DeleteInspectionChecklistInput
-  ) => this.request("DELETE", `${API_URL}`, undefined, inspectionChecklistData);
+  deleteVehicleInspectionChecklist = (
+    data: DeleteVehicleInspectionChecklistInput
+  ) => this.request("DELETE", `${API_URL}/vehicles`, undefined, data);
+
+  // Garage Inspection APIs
+  createGarageInspectionChecklist = (
+    data: CreateGarageInspectionChecklistInput
+  ) => this.request("POST", `${API_URL}/garages`, data);
+
+  updateGarageInspectionChecklist = (
+    data: UpdateGarageInspectionChecklistInput
+  ) => this.request("PUT", `${API_URL}/garages`, data);
+
+  getGarageInspectionChecklistById = (
+    data: GetGarageInspectionChecklistByIdInput
+  ) => this.request("GET", `${API_URL}/garages/find`, undefined, data);
+
+  deleteGarageInspectionChecklist = (
+    data: DeleteGarageInspectionChecklistInput
+  ) => this.request("DELETE", `${API_URL}/garages`, undefined, data);
 }
 
 const inspectionsApi = new InspectionsApi();

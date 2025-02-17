@@ -6,11 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { customerApi } from "@/app/api";
-import { UpdateCustomerInput } from "@/types";
-import Spinner from "@/components/Spinner/Spinner";
+import { CustomerStatus, UpdateCustomerInput } from "@/types";
 import { FaSave } from "react-icons/fa";
 import * as Yup from "yup";
 import axios from "axios";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectValue,
+  SelectItem,
+} from "@/components/ui/select";
 
 interface ApiResponse {
   success: boolean;
@@ -28,6 +34,7 @@ const EditCustomerPage: React.FC = () => {
     name: "",
     contact: "",
     address: "",
+    customerType: CustomerStatus.INDIVIDUAL,
   });
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -45,6 +52,8 @@ const EditCustomerPage: React.FC = () => {
             name: response.data.name || "",
             contact: response.data.contact || "",
             address: response.data.address || "",
+            customerType:
+              response.data.customerType || CustomerStatus.INDIVIDUAL,
           });
         } else {
           toast.error("Failed to load customer", {
@@ -163,8 +172,6 @@ const EditCustomerPage: React.FC = () => {
     }
   };
 
-  if (loading) return <Spinner />;
-
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Edit Customer</h1>
@@ -177,6 +184,31 @@ const EditCustomerPage: React.FC = () => {
             onChange={handleInputChange}
             placeholder="Enter customer name"
           />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Customer Type</label>
+          <Select
+            value={formData.customerType}
+            onValueChange={(value) => {
+              setFormData((prevData) => ({
+                ...prevData,
+                customerType: value as CustomerStatus,
+              }));
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select type">
+                {formData.customerType}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(CustomerStatus).map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label className="block text-sm font-medium">Contact</label>
@@ -205,7 +237,7 @@ const EditCustomerPage: React.FC = () => {
             Cancel
           </Button>
           <Button onClick={handleUpdate} className="flex items-center gap-2">
-            <FaSave /> Save Changes
+            <FaSave /> {loading ? "Please Wait..." : "Save Changes"}
           </Button>
         </div>
       </div>

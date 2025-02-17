@@ -9,15 +9,19 @@ import { toast } from "sonner";
 import { ValidationError } from "yup";
 import { authApi } from "@/app/api";
 import axios from "axios";
-import { RegisterInput } from "@/types";
+import { LoginInput, User } from "@/types";
 import { motion } from "framer-motion";
-import { AiOutlineUser, AiOutlinePhone, AiOutlineLock } from "react-icons/ai";
+import {
+  AiOutlinePhone,
+  AiOutlineLock,
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+} from "react-icons/ai";
+import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
-const signupSchema = yup.object().shape({
-  firstName: yup.string().required("First name is required"),
-  lastName: yup.string().required("Last name is required"),
+const loginSchema = yup.object().shape({
   phoneNumber: yup
     .string()
     .matches(/^\d{9}$/, "Phone number must have 9 digits")
@@ -28,17 +32,16 @@ const signupSchema = yup.object().shape({
     .required("Password is required"),
 });
 
-const SignUpPage = () => {
+const LoginPage = () => {
   useAuth();
   const router = useRouter();
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
     phoneNumber: "",
     password: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,22 +51,26 @@ const SignUpPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await signupSchema.validate(formData, { abortEarly: false });
+      await loginSchema.validate(formData, { abortEarly: false });
       setErrors({});
 
       const formattedPhone = `+256${formData.phoneNumber}`;
-      const userData: RegisterInput = {
+      const userData: LoginInput = {
         ...formData,
         phoneNumber: formattedPhone,
       };
 
-      await authApi.signup(userData);
+      await authApi.login(userData);
 
-      toast.success("Sign-up successful!", {
-        description: `Welcome, ${formData.firstName}! Your account has been created. Please log in to continue.`,
+      const user: User | undefined = Cookies.get("user")
+        ? JSON.parse(Cookies.get("user") as string)
+        : undefined;
+
+      toast.success("Login successful!", {
+        description: `Welcome back! ${user?.firstName || ""}`,
       });
 
-      router.replace("/login");
+      router.replace("/dashboard");
     } catch (err: unknown) {
       if (err instanceof ValidationError) {
         const newErrors: Record<string, string> = {};
@@ -73,14 +80,14 @@ const SignUpPage = () => {
           }
         });
         setErrors(newErrors);
-        toast.error("Sign-up failed", {
+        toast.error("Login failed", {
           description: "Please fix the errors in the form.",
         });
       } else if (axios.isAxiosError(err)) {
-        toast.error("Sign-up failed", {
+        toast.error("Login failed", {
           description:
             err.response?.data?.message ||
-            "An error occurred while signing up.",
+            "An error occurred while logging in.",
         });
 
         if (err.response?.data?.message) {
@@ -90,19 +97,12 @@ const SignUpPage = () => {
           console.error("API validation errors:", err.response.data.errors);
         }
       } else {
-        toast.error("Sign-up failed", {
+        toast.error("Login failed", {
           description: "An unexpected error occurred.",
         });
       }
     } finally {
       setLoading(false);
-
-      setFormData({
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-        password: "",
-      });
     }
   };
 
@@ -117,49 +117,9 @@ const SignUpPage = () => {
         <Card className="shadow-xl rounded-3xl bg-white/80 backdrop-blur-md">
           <CardContent className="p-8">
             <h2 className="text-3xl font-semibold text-gray-800 text-center mb-8">
-              Create an Account
+              Login to Your Account
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[
-                  {
-                    name: "firstName",
-                    placeholder: "First Name",
-                    icon: <AiOutlineUser />,
-                  },
-                  {
-                    name: "lastName",
-                    placeholder: "Last Name",
-                    icon: <AiOutlineUser />,
-                  },
-                ].map(({ name, placeholder, icon }, index) => (
-                  <motion.div
-                    key={name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <div className="flex items-center border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-sm focus-within:border-orange-500 transition-all duration-300 hover:shadow-md">
-                      <span className="text-gray-500 text-lg">{icon}</span>
-                      <Input
-                        type="text"
-                        placeholder={placeholder}
-                        name={name}
-                        value={formData[name as keyof typeof formData]}
-                        onChange={handleChange}
-                        className="flex-1 border-none focus:ring-0 focus:outline-none ml-3 text-lg bg-transparent"
-                        disabled={loading}
-                      />
-                    </div>
-                    {errors[name] && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors[name]}
-                      </p>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
-
               {[
                 {
                   name: "phoneNumber",
@@ -171,32 +131,61 @@ const SignUpPage = () => {
                   name: "password",
                   placeholder: "Password",
                   icon: <AiOutlineLock />,
-                  type: "password",
+                  type: passwordVisible ? "text" : "password",
+                  toggleIcon: passwordVisible ? (
+                    <AiOutlineEyeInvisible />
+                  ) : (
+                    <AiOutlineEye />
+                  ),
+                  onTogglePassword: () => setPasswordVisible(!passwordVisible),
                 },
-              ].map(({ name, placeholder, icon, maxLength, type }, index) => (
-                <motion.div
-                  key={name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: (index + 2) * 0.1 }}
-                >
-                  <div className="flex items-center border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-sm focus-within:border-orange-500 transition-all duration-300 hover:shadow-md">
-                    <span className="text-gray-500 text-lg">{icon}</span>
-                    <Input
-                      type={type || "text"}
-                      placeholder={placeholder}
-                      name={name}
-                      maxLength={maxLength}
-                      value={formData[name as keyof typeof formData]}
-                      onChange={handleChange}
-                      className="flex-1 border-none focus:ring-0 focus:outline-none ml-3 text-lg bg-transparent"
-                    />
-                  </div>
-                  {errors[name] && (
-                    <p className="text-red-500 text-sm mt-1">{errors[name]}</p>
-                  )}
-                </motion.div>
-              ))}
+              ].map(
+                (
+                  {
+                    name,
+                    placeholder,
+                    icon,
+                    maxLength,
+                    type,
+                    toggleIcon,
+                    onTogglePassword,
+                  },
+                  index
+                ) => (
+                  <motion.div
+                    key={name}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: (index + 2) * 0.1 }}
+                  >
+                    <div className="flex items-center border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-sm focus-within:border-orange-500 transition-all duration-300 hover:shadow-md">
+                      <span className="text-gray-500 text-lg">{icon}</span>
+                      <Input
+                        type={type || "text"}
+                        placeholder={placeholder}
+                        name={name}
+                        maxLength={maxLength}
+                        value={formData[name as keyof typeof formData]}
+                        onChange={handleChange}
+                        className="flex-1 border-none focus:ring-0 focus:outline-none ml-3 text-lg bg-transparent"
+                      />
+                      {toggleIcon && (
+                        <span
+                          className="text-gray-500 cursor-pointer"
+                          onClick={onTogglePassword}
+                        >
+                          {toggleIcon}
+                        </span>
+                      )}
+                    </div>
+                    {errors[name] && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors[name]}
+                      </p>
+                    )}
+                  </motion.div>
+                )
+              )}
 
               <motion.div
                 initial={{ scale: 0.9 }}
@@ -212,7 +201,7 @@ const SignUpPage = () => {
                   {loading ? (
                     <span className="flex justify-center items-center">
                       <svg
-                        className="animate-spin h-5 w-5 mr-3 text-white"
+                        className="animate-spin h-8 w-8 mr-3 text-white"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -232,21 +221,21 @@ const SignUpPage = () => {
                           strokeWidth="4"
                         ></path>
                       </svg>
-                      Signing Up...
+                      Logging In...
                     </span>
                   ) : (
-                    "Sign Up"
+                    "Log In"
                   )}
                 </Button>
               </motion.div>
             </form>
             <p className="text-center text-gray-600 text-sm mt-6">
-              Already have an account?{" "}
+              Don&apos;t have an account?{" "}
               <span
                 className="text-orange-500 cursor-pointer hover:underline"
-                onClick={() => router.push("/login")}
+                onClick={() => router.push("/signup")}
               >
-                Log in
+                Sign up
               </span>
             </p>
           </CardContent>
@@ -256,4 +245,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default LoginPage;

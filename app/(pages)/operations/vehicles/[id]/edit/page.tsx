@@ -6,11 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { vehicleApi } from "@/app/api";
-import { UpdateVehicleInput, Vehicle } from "@/types";
-import Spinner from "@/components/Spinner/Spinner";
+import {
+  UpdateVehicleInput,
+  Vehicle,
+  FuelType,
+  VehicleModel,
+  VehicleMake,
+} from "@/types";
+// import Spinner from "@/components/Spinner/Spinner";
 import { FaSave } from "react-icons/fa";
 import * as Yup from "yup";
 import axios from "axios";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ApiResponse {
   success: boolean;
@@ -30,6 +43,11 @@ const EditVehiclePage: React.FC = () => {
     year: new Date().getFullYear(),
     plateNumber: "",
     vin: "",
+    fuel: "",
+    transmission: "",
+    bodyShape: "",
+    engine: "",
+    chassis: "",
   });
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -49,6 +67,11 @@ const EditVehiclePage: React.FC = () => {
             year: response.data.year || new Date().getFullYear(),
             plateNumber: response.data.plateNumber || "",
             vin: response.data.vin || "",
+            fuel: response.data.fuel || "",
+            transmission: response.data.transmission || "",
+            bodyShape: response.data.bodyShape || "",
+            engine: response.data.engine || "",
+            chassis: response.data.chassis || "",
           });
         } else {
           toast.error("Failed to load vehicle", {
@@ -133,29 +156,57 @@ const EditVehiclePage: React.FC = () => {
     }
   };
 
-  if (loading) return <Spinner />;
+  // if (loading) return <Spinner />;
 
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Edit Vehicle</h1>
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium">Make</label>
-          <Input
-            name="make"
+          <Select
             value={formData.make}
-            onChange={handleInputChange}
-            placeholder="Enter vehicle make"
-          />
+            onValueChange={(value) => {
+              setFormData((prev) => ({
+                ...prev,
+                make: value,
+              }));
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select make" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(VehicleMake).map((make) => (
+                <SelectItem key={make} value={make}>
+                  {make}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label className="block text-sm font-medium">Model</label>
-          <Input
-            name="model"
+          <Select
             value={formData.model}
-            onChange={handleInputChange}
-            placeholder="Enter vehicle model"
-          />
+            onValueChange={(value) => {
+              setFormData((prev) => ({
+                ...prev,
+                model: value,
+              }));
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select model" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(VehicleModel).map((model) => (
+                <SelectItem key={model} value={model}>
+                  {model}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label className="block text-sm font-medium">Year</label>
@@ -185,18 +236,83 @@ const EditVehiclePage: React.FC = () => {
             placeholder="Enter VIN (optional)"
           />
         </div>
+        <div>
+          <label className="block text-sm font-medium">Fuel Type</label>
+          <Select
+            value={formData.fuel}
+            onValueChange={(value) => {
+              setFormData((prev) => ({
+                ...prev,
+                fuel: value,
+              }));
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select fuel type" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(FuelType).map((fuel) => (
+                <SelectItem key={fuel} value={fuel}>
+                  {fuel}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Transmission</label>
+          <Input
+            name="transmission"
+            value={formData.transmission}
+            onChange={handleInputChange}
+            placeholder="Enter transmission type"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Body Shape</label>
+          <Input
+            name="bodyShape"
+            value={formData.bodyShape}
+            onChange={handleInputChange}
+            placeholder="Enter body shape"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Engine</label>
+          <Input
+            name="engine"
+            value={formData.engine}
+            onChange={handleInputChange}
+            placeholder="Enter engine type"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Chassis</label>
+          <Input
+            name="chassis"
+            value={formData.chassis}
+            onChange={handleInputChange}
+            placeholder="Enter chassis type"
+          />
+        </div>
+      </div>
 
-        <div className="flex justify-end space-x-2">
+      <div className="flex justify-end space-x-2 mt-6">
+        {!loading && (
           <Button
             variant="outline"
             onClick={() => router.push("/operations/vehicles")}
           >
             Cancel
           </Button>
-          <Button onClick={handleUpdate} className="flex items-center gap-2">
-            <FaSave /> Save Changes
-          </Button>
-        </div>
+        )}
+        <Button
+          onClick={handleUpdate}
+          className="flex items-center gap-2"
+          disabled={loading}
+        >
+          <FaSave /> {loading ? "Please Wait..." : "Save Changes"}
+        </Button>
       </div>
     </div>
   );

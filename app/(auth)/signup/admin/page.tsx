@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { ValidationError } from "yup";
 import { authApi } from "@/app/api";
 import axios from "axios";
-import { RegisterInput } from "@/types";
+import { RegisterAdminInput } from "@/types";
 import { motion } from "framer-motion";
 import { AiOutlineUser, AiOutlinePhone, AiOutlineLock } from "react-icons/ai";
 import { useRouter } from "next/navigation";
@@ -52,7 +52,7 @@ const SignUpPage = () => {
       setErrors({});
 
       const formattedPhone = `+256${formData.phoneNumber}`;
-      const userData: RegisterInput = {
+      const userData: RegisterAdminInput = {
         ...formData,
         phoneNumber: formattedPhone,
       };

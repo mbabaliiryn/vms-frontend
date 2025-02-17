@@ -146,9 +146,10 @@ const CustomersPage: React.FC = () => {
               <TableRow>
                 <TableHead className="px-4 py-3">ID</TableHead>
                 <TableHead>Name</TableHead>
+                <TableHead>Customer Type</TableHead>
                 <TableHead>Contact</TableHead>
                 <TableHead>Address</TableHead>
-                <TableHead>Branch</TableHead>
+                <TableHead>Garage</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -164,9 +165,10 @@ const CustomersPage: React.FC = () => {
                     {index + 1}
                   </TableCell>
                   <TableCell>{customer.name}</TableCell>
+                  <TableCell>{customer.customerType}</TableCell>
                   <TableCell>{customer.contact}</TableCell>
                   <TableCell>{customer.address}</TableCell>
-                  <TableCell>{customer.branchId}</TableCell>
+                  <TableCell>{customer.garage.name}</TableCell>
 
                   <TableCell>
                     <Popover>
@@ -232,10 +234,17 @@ const CustomersPage: React.FC = () => {
                 <strong>Contact:</strong> {selectedCustomer.contact}
               </p>
               <p>
+                <strong>Customer Type:</strong> {selectedCustomer.customerType}
+              </p>
+              <p>
                 <strong>Address:</strong> {selectedCustomer.address}
               </p>
               <p>
-                <strong>Branch ID:</strong> {selectedCustomer.branchId}
+                <strong>Garage:</strong> {selectedCustomer.garage.name}
+              </p>
+              <p>
+                <strong>Vehicles: </strong>{" "}
+                {selectedCustomer.vehicles?.length || 0}
               </p>
             </div>
           )}

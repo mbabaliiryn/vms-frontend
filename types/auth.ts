@@ -1,6 +1,21 @@
-import { Branch } from "./branch";
+import { Garage } from "./garage";
+
+export enum Role {
+  ADMIN = "ADMIN",
+  MECHANIC = "MECHANIC",
+  INSPECTOR = "INSPECTOR",
+}
 
 export interface RegisterInput {
+  phoneNumber: string;
+  garageId: string;
+  password?: string;
+  firstName: string;
+  lastName: string;
+  role: Role;
+}
+
+export interface RegisterAdminInput {
   phoneNumber: string;
   password: string;
   firstName: string;
@@ -17,17 +32,12 @@ export interface AssignRoleInput {
   role: Role;
 }
 
-enum Role {
-  ADMIN = "ADMIN",
-  MANAGER = "MANAGER",
-  MECHANIC = "MECHANIC",
-}
-
 export interface User {
   id: string;
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  isActivated: boolean;
   role: Role;
-  branch: Branch;
+  garage: Garage;
 }

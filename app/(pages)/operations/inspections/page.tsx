@@ -90,7 +90,7 @@ const InspectionsPage: React.FC = () => {
   const handleDeleteInspection = async (checklistId: string) => {
     setLoading(true);
     try {
-      const response = (await inspectionsApi.deleteInspectionChecklist({
+      const response = (await inspectionsApi.deleteVehicleInspectionChecklist({
         checklistId,
       })) as DeleteResponse;
       if (response.success) {

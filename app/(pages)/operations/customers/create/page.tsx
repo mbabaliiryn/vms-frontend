@@ -16,15 +16,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { customerApi, branchApi } from "@/app/api";
-import { CreateCustomerInput, Branch } from "@/types";
+import { customerApi, garageApi } from "@/app/api";
+import { CreateCustomerInput, CustomerStatus, Garage } from "@/types";
 import axios from "axios";
 import * as Yup from "yup";
 
 interface ApiResponse {
   success: boolean;
   message: string;
-  data: Branch[];
+  data: Garage[];
 }
 
 interface CreateResponse {
@@ -36,13 +36,17 @@ const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   contact: yup.string().required("Contact is required"),
   address: yup.string().required("Address is required"),
-  branchId: yup.string().required("Branch is required"),
+  customerType: yup
+    .string()
+    .oneOf(Object.values(CustomerStatus), "Invalid customer type")
+    .required("Customer type is required"),
+  garageId: yup.string().required("Garage is required"),
 });
 
 const CreateCustomerPage: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [branches, setBranches] = useState<Branch[]>([]);
+  const [garages, setGarages] = useState<Garage[]>([]);
 
   const {
     register,
@@ -54,15 +58,15 @@ const CreateCustomerPage: React.FC = () => {
   });
 
   useEffect(() => {
-    const fetchBranches = async () => {
+    const fetchGarages = async () => {
       try {
-        const response = (await branchApi.getBranches()) as ApiResponse;
+        const response = (await garageApi.getGarages()) as ApiResponse;
         if (response.success) {
-          setBranches(response.data);
+          setGarages(response.data);
         } else {
-          toast.error("Failed to load branches", {
+          toast.error("Failed to load garages", {
             description:
-              response.message || "An error occurred while fetching branches.",
+              response.message || "An error occurred while fetching garages.",
           });
         }
       } catch (err: unknown) {
@@ -73,7 +77,7 @@ const CreateCustomerPage: React.FC = () => {
               newErrors[error.path] = error.message;
             }
           });
-          toast.error("Branch creation failed", {
+          toast.error("Garage creation failed", {
             description: "Please fix the errors in the form.",
           });
         } else if (axios.isAxiosError(err) && err.response) {
@@ -84,7 +88,7 @@ const CreateCustomerPage: React.FC = () => {
             success?: boolean;
           };
 
-          toast.error("Branch creation failed", {
+          toast.error("Garage creation failed", {
             description: apiError.message || "An unknown error occurred.",
           });
         } else if (
@@ -94,11 +98,11 @@ const CreateCustomerPage: React.FC = () => {
         ) {
           const errorObj = err as { message: string; success?: boolean };
 
-          toast.error("Branch creation failed", {
+          toast.error("Garage creation failed", {
             description: errorObj.message || "An unknown error occurred.",
           });
         } else {
-          toast.error("Branch creation failed", {
+          toast.error("Garage creation failed", {
             description: "An unexpected error occurred.",
           });
         }
@@ -107,7 +111,7 @@ const CreateCustomerPage: React.FC = () => {
       }
     };
 
-    fetchBranches();
+    fetchGarages();
   }, []);
 
   const onSubmit = async (data: CreateCustomerInput) => {
@@ -175,6 +179,31 @@ const CreateCustomerPage: React.FC = () => {
         </div>
 
         <div>
+          <Label>Customer Type</Label>
+          <Select
+            onValueChange={(value) =>
+              setValue("customerType", value as CustomerStatus)
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Customer Type" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(CustomerStatus).map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors.customerType && (
+            <p className="text-red-500 text-sm">
+              {errors.customerType.message}
+            </p>
+          )}
+        </div>
+
+        <div>
           <Label htmlFor="contact">Contact</Label>
           <Input id="contact" {...register("contact")} />
           {errors.contact && (
@@ -191,21 +220,21 @@ const CreateCustomerPage: React.FC = () => {
         </div>
 
         <div>
-          <Label>Branch</Label>
-          <Select onValueChange={(value) => setValue("branchId", value)}>
+          <Label>Garage</Label>
+          <Select onValueChange={(value) => setValue("garageId", value)}>
             <SelectTrigger>
-              <SelectValue placeholder="Select a branch" />
+              <SelectValue placeholder="Select a garage" />
             </SelectTrigger>
             <SelectContent>
-              {branches.map((branch) => (
-                <SelectItem key={branch.id} value={branch.id}>
-                  {branch.name}
+              {garages.map((garage) => (
+                <SelectItem key={garage.id} value={garage.id}>
+                  {garage.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {errors.branchId && (
-            <p className="text-red-500 text-sm">{errors.branchId.message}</p>
+          {errors.garageId && (
+            <p className="text-red-500 text-sm">{errors.garageId.message}</p>
           )}
         </div>
 

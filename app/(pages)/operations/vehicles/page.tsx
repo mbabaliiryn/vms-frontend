@@ -146,6 +146,8 @@ const VehiclesPage: React.FC = () => {
                 <TableHead>Model</TableHead>
                 <TableHead>Year</TableHead>
                 <TableHead>Plate Number</TableHead>
+                <TableHead>Garage</TableHead>
+                <TableHead>Customer</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -160,6 +162,8 @@ const VehiclesPage: React.FC = () => {
                   <TableCell>{vehicle.model}</TableCell>
                   <TableCell>{vehicle.year}</TableCell>
                   <TableCell>{vehicle.plateNumber}</TableCell>
+                  <TableCell>{vehicle?.garage?.name || "N/A"}</TableCell>
+                  <TableCell>{vehicle?.customer?.name || "N/A"}</TableCell>
                   <TableCell>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -229,17 +233,45 @@ const VehiclesPage: React.FC = () => {
                   <strong>VIN:</strong> {selectedVehicle.vin}
                 </p>
               )}
+              {selectedVehicle.fuel && (
+                <p>
+                  <strong>Fuel:</strong> {selectedVehicle.fuel}
+                </p>
+              )}
+              {selectedVehicle.transmission && (
+                <p>
+                  <strong>Transmission:</strong> {selectedVehicle.transmission}
+                </p>
+              )}
+              {selectedVehicle.bodyShape && (
+                <p>
+                  <strong>Body Shape:</strong> {selectedVehicle.bodyShape}
+                </p>
+              )}
+              {selectedVehicle.engine && (
+                <p>
+                  <strong>Engine:</strong> {selectedVehicle.engine}
+                </p>
+              )}
+              {selectedVehicle.chassis && (
+                <p>
+                  <strong>Chassis:</strong> {selectedVehicle.chassis}
+                </p>
+              )}
               <p>
-                <strong>Branch ID:</strong> {selectedVehicle.branchId}
+                <strong>Garage:</strong>{" "}
+                {selectedVehicle?.garage?.name || "N/A"}
               </p>
               <p>
-                <strong>Customer ID:</strong> {selectedVehicle.customerId}
+                <strong>Customer:</strong>{" "}
+                {selectedVehicle?.customer?.name || "N/A"}
               </p>
             </div>
           )}
         </DialogContent>
       </Dialog>
 
+      {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
