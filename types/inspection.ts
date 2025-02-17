@@ -192,7 +192,7 @@ export interface CreateVehicleInspectionChecklistInput {
   garageId: string;
   inspectorId: string;
   checklist: InspectionChecklist;
-  signature?: string;
+  lastInspectionDate?: string;
 }
 
 export interface CreateGarageInspectionChecklistInput {
@@ -200,6 +200,7 @@ export interface CreateGarageInspectionChecklistInput {
   inspectorId: string;
   checklist: GarageInspectionChecklist;
   notes?: string;
+  lastInspectionDate?: string;
 }
 
 export interface UpdateVehicleInspectionChecklistInput {
@@ -207,6 +208,7 @@ export interface UpdateVehicleInspectionChecklistInput {
   checklist?: Partial<InspectionChecklist>;
   signature?: string;
   updatedAt?: string;
+  lastInspectionDate?: string;
 }
 
 export interface UpdateGarageInspectionChecklistInput {
@@ -214,6 +216,7 @@ export interface UpdateGarageInspectionChecklistInput {
   checklist?: Partial<GarageInspectionChecklist>;
   updatedAt?: string;
   notes?: string;
+  lastInspectionDate?: string;
 }
 
 export interface GetVehicleInspectionChecklistByIdInput {
@@ -238,7 +241,7 @@ export interface VehicleInspection {
   garageId: string;
   inspectorId: string;
   checklist: InspectionChecklist;
-  signature?: string;
+  lastInspectionDate?: string;
   createdAt?: string;
   updatedAt?: string;
 
@@ -253,6 +256,7 @@ export interface GarageInspection {
   inspectorId: string;
   checklist: GarageInspectionChecklist;
   notes?: string;
+  lastInspectionDate?: string;
   createdAt?: string;
   updatedAt?: string;
 

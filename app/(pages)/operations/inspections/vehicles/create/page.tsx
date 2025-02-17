@@ -1,14 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import BasicInfo from "@/components/Inspections/Forms/BasicInfo";
-import ExteriorCheck from "@/components/Inspections/Forms/ExteriorCheck";
-import UnderHoodCheck from "@/components/Inspections/Forms/UnderHoodCheck";
-import FluidsCheck from "@/components/Inspections/Forms/FluidsCheck";
-import UndercarriageCheck from "@/components/Inspections/Forms/UnderCarriageCheck";
-import BrakesCheck from "@/components/Inspections/Forms/BrakesCheck";
-import TiresCheck from "@/components/Inspections/Forms/TireCheck";
-import SystemChecksForm from "@/components/Inspections/Forms/SystemCheck";
+import BasicInfo from "@/components/Inspections/VehicleInspections/Forms/BasicInfo";
+import ExteriorCheck from "@/components/Inspections/VehicleInspections/Forms/ExteriorCheck";
+import UnderHoodCheck from "@/components/Inspections/VehicleInspections/Forms/UnderHoodCheck";
+import CombinedFluidsUndercarriageForm from "@/components/Inspections/VehicleInspections/Forms/Fluids&UnderCarriage";
+import BrakesTiresSystemForm from "@/components/Inspections/VehicleInspections/Forms/BrakesSystemTires";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { inspectionsApi } from "@/app/api";
@@ -28,9 +25,9 @@ const InspectionChecklistPage = () => {
   const [loading, setLoading] = useState(false);
   const [checklistData, setChecklistData] = useState({
     vehicleId: "",
-    branchId: "",
+    garageId: "",
     inspectorId: "",
-    signature: "",
+    lastInspectionDate: "",
     exterior: {
       front: {
         windshield: CheckStatus.CHECKED_OK,
@@ -150,7 +147,6 @@ const InspectionChecklistPage = () => {
         [field]: value,
       }));
     } else {
-      // Handle nested section data
       setChecklistData((prev) => ({
         ...prev,
         [section]: {
@@ -169,7 +165,7 @@ const InspectionChecklistPage = () => {
     try {
       const dataToSubmit: CreateVehicleInspectionChecklistInput = {
         vehicleId: checklistData.vehicleId,
-        branchId: checklistData.branchId,
+        garageId: checklistData.garageId,
         inspectorId: checklistData.inspectorId,
         checklist: {
           exterior: checklistData.exterior,
@@ -180,7 +176,6 @@ const InspectionChecklistPage = () => {
           tires: checklistData.tires,
           systemChecks: checklistData.systemChecks,
         },
-        signature: checklistData.signature,
       };
 
       const response = (await inspectionsApi.createVehicleInspectionChecklist(
@@ -189,7 +184,7 @@ const InspectionChecklistPage = () => {
       if (response.success) {
         toast.success("Inspection submitted successfully!");
 
-        router.push("/operations/inspections");
+        router.push("/operations/inspections/vehicles");
       } else {
         toast.error(response.message);
       }
@@ -232,18 +227,18 @@ const InspectionChecklistPage = () => {
   };
 
   return (
-    <div className="space-y-6 p-6 bg-white rounded-xl shadow-md">
+    <div className="space-y-1 p-4 bg-white rounded-xl shadow-md">
       <h1 className="text-3xl font-bold">Vehicle Inspection Checklist</h1>
-      <p className="text-gray-600">Step {step} of 8</p>
+      <p className="text-gray-600">Step {step} of 5</p>
 
       {/* Render forms based on step */}
       {step === 1 && (
         <BasicInfo
           data={{
             vehicleId: checklistData.vehicleId,
-            branchId: checklistData.branchId,
+            garageId: checklistData.garageId,
             inspectorId: checklistData.inspectorId,
-            signature: checklistData.signature,
+            lastInspectionDate: checklistData.lastInspectionDate,
           }}
           onChange={(field, value) => handleChange("basicInfo", field, value)}
         />
@@ -261,33 +256,36 @@ const InspectionChecklistPage = () => {
         />
       )}
       {step === 4 && (
-        <FluidsCheck
-          data={checklistData.fluids}
-          onChange={(f, v) => handleChange("fluids", f, v)}
+        <CombinedFluidsUndercarriageForm
+          data={{
+            fluids: checklistData.fluids,
+            undercarriage: checklistData.undercarriage,
+          }}
+          onChange={(field, value) => {
+            if (field.startsWith("fluids")) {
+              handleChange("fluids", field.split(".")[1], value);
+            } else if (field.startsWith("undercarriage")) {
+              handleChange("undercarriage", field.split(".")[1], value);
+            }
+          }}
         />
       )}
       {step === 5 && (
-        <UndercarriageCheck
-          data={checklistData.undercarriage}
-          onChange={(f, v) => handleChange("undercarriage", f, v)}
-        />
-      )}
-      {step === 6 && (
-        <BrakesCheck
-          data={checklistData.brakes}
-          onChange={(f, v) => handleChange("brakes", f, v)}
-        />
-      )}
-      {step === 7 && (
-        <TiresCheck
-          data={checklistData.tires}
-          onChange={(f, v) => handleChange("tires", f, v)}
-        />
-      )}
-      {step === 8 && (
-        <SystemChecksForm
-          data={checklistData.systemChecks}
-          onChange={(f, v) => handleChange("systemChecks", f, v)}
+        <BrakesTiresSystemForm
+          data={{
+            brakes: checklistData.brakes,
+            tires: checklistData.tires,
+            systemChecks: checklistData.systemChecks,
+          }}
+          onChange={(field, value) => {
+            if (field.startsWith("brakes")) {
+              handleChange("brakes", field.split(".")[1], value);
+            } else if (field.startsWith("tires")) {
+              handleChange("tires", field.split(".")[1], value);
+            } else if (field.startsWith("systemChecks")) {
+              handleChange("systemChecks", field.split(".")[1], value);
+            }
+          }}
         />
       )}
 
@@ -298,7 +296,7 @@ const InspectionChecklistPage = () => {
             Previous
           </Button>
         )}
-        {step < 8 ? (
+        {step < 5 ? (
           <Button onClick={handleNext}>Next</Button>
         ) : (
           <Button
