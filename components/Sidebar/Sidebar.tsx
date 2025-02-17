@@ -15,7 +15,6 @@ import {
   FiX,
   FiList,
   FiUserPlus,
-  // FiShield,
   FiMapPin,
   FiPlusCircle,
   FiTool,
@@ -65,11 +64,6 @@ const menuGroups: { name: string; menuItems: MenuItem[] }[] = [
             label: "Add User",
             route: "/admin/users/create",
           },
-          // {
-          //   icon: <FiShield size={16} />,
-          //   label: "Manage Roles",
-          //   route: "/admin/users/roles",
-          // },
         ],
       },
       {
@@ -159,10 +153,15 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const toggleDropdown = (label: string) => {
+    if (!label) return;
     setOpenDropdowns((prev) => ({
       ...prev,
       [label]: !prev[label],
     }));
+  };
+
+  const isValidMenuItem = (item: MenuItem | undefined): item is MenuItem => {
+    return !!item && typeof item.label === "string";
   };
 
   return (
@@ -179,7 +178,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Header */}
         <div className="flex items-center justify-between bg-gradient-to-r from-orange-50 to-orange-100 px-8 py-5">
           <Link
             href="/dashboard"
@@ -198,7 +196,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           </button>
         </div>
 
-        {/* Menu Section */}
         <div className="flex flex-1 flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-gray-50">
           <nav className="mt-4 px-4 lg:px-6">
             {menuGroups.map((group, groupIndex) => (
@@ -207,14 +204,16 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                   {group.name}
                 </h3>
                 <ul className="space-y-1">
-                  {group.menuItems.map((menuItem, menuIndex) => (
-                    <SidebarItem
-                      key={menuIndex}
-                      item={menuItem}
-                      isDropdownOpen={!!openDropdowns[menuItem.label]}
-                      toggleDropdown={toggleDropdown}
-                    />
-                  ))}
+                  {group.menuItems
+                    .filter(isValidMenuItem)
+                    .map((menuItem, menuIndex) => (
+                      <SidebarItem
+                        key={`${menuItem.label}-${menuIndex}`}
+                        item={menuItem}
+                        isDropdownOpen={!!openDropdowns?.[menuItem.label]}
+                        toggleDropdown={toggleDropdown}
+                      />
+                    ))}
                 </ul>
               </div>
             ))}

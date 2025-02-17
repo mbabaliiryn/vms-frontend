@@ -10,9 +10,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "AutoCare Hub - Vehicle Management System",
+  title: "NAGOA - Management System",
   description:
-    "Vehicle management system for garage companies, offering car repairs, inspections, servicing, and more.",
+    "Management system for garage companies, offering car repairs, inspections, servicing, and more.",
 };
 
 export default function RootLayout({

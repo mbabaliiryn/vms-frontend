@@ -1,3 +1,7 @@
+import { User } from "./auth";
+import { Garage } from "./garage";
+import { Vehicle } from "./vehicle";
+
 export enum CheckStatus {
   CHECKED_OK = "CHECKED_OK",
   REQUIRES_FUTURE_ATTENTION = "REQUIRES_FUTURE_ATTENTION",
@@ -185,7 +189,7 @@ export interface GarageInspectionChecklist {
 
 export interface CreateVehicleInspectionChecklistInput {
   vehicleId: string;
-  branchId: string;
+  garageId: string;
   inspectorId: string;
   checklist: InspectionChecklist;
   signature?: string;
@@ -231,12 +235,16 @@ export interface DeleteGarageInspectionChecklistInput {
 export interface VehicleInspection {
   id: string;
   vehicleId: string;
-  branchId: string;
+  garageId: string;
   inspectorId: string;
   checklist: InspectionChecklist;
   signature?: string;
   createdAt?: string;
   updatedAt?: string;
+
+  vehicle: Vehicle;
+  garage: Garage;
+  inspector: User;
 }
 
 export interface GarageInspection {
@@ -247,4 +255,7 @@ export interface GarageInspection {
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
+
+  garage: Garage;
+  inspector: User;
 }

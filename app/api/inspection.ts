@@ -57,7 +57,8 @@ class InspectionsApi {
     data: UpdateVehicleInspectionChecklistInput
   ) => this.request("PUT", `${API_URL}/vehicles`, data);
 
-  getAllInspectionChecklists = () => this.request("GET", `${API_URL}`);
+  getAllVehicleInspectionChecklists = () =>
+    this.request("GET", `${API_URL}/vehicles`);
 
   getVehicleInspectionChecklistById = (
     data: GetVehicleInspectionChecklistByIdInput
@@ -79,6 +80,9 @@ class InspectionsApi {
   getGarageInspectionChecklistById = (
     data: GetGarageInspectionChecklistByIdInput
   ) => this.request("GET", `${API_URL}/garages/find`, undefined, data);
+
+  getAllGarageInspectionChecklists = () =>
+    this.request("GET", `${API_URL}/garages`);
 
   deleteGarageInspectionChecklist = (
     data: DeleteGarageInspectionChecklistInput
