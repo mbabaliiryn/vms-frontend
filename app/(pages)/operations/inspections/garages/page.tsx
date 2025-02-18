@@ -129,7 +129,7 @@ const GarageInspectionsPage: React.FC = () => {
         <h1 className="text-2xl font-semibold">Garage Inspections</h1>
         <Button
           onClick={() => router.push("/operations/inspections/garages/create")}
-          className="px-4 py-2"
+          className="px-4 py-2  bg-orange-500 hover:bg-orange-600"
         >
           + Add Inspection
         </Button>

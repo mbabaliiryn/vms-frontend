@@ -128,7 +128,7 @@ const CustomersPage: React.FC = () => {
         <h1 className="text-2xl font-semibold">Customers</h1>
         <Button
           onClick={() => router.push("/operations/customers/create")}
-          className="px-4 py-2"
+          className="px-4 py-2  bg-orange-500 hover:bg-orange-600"
         >
           + Add Customer
         </Button>

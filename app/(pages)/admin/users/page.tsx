@@ -130,7 +130,7 @@ const UsersPage: React.FC = () => {
         <h1 className="text-2xl font-semibold">Users</h1>
         <Button
           onClick={() => router.push("/admin/users/create")}
-          className="px-4 py-2"
+          className="px-4 py-2 bg-orange-500 hover:bg-orange-600"
         >
           + Add User
         </Button>
@@ -141,7 +141,7 @@ const UsersPage: React.FC = () => {
       ) : (
         <div className="border rounded-lg shadow-sm overflow-hidden">
           <Table className="w-full border-collapse">
-            <TableCaption className="py-3 text-gray-500">
+            <TableCaption className="py-3 text-black">
               List of all users.
             </TableCaption>
             <TableHeader className="bg-gray-100">
@@ -150,7 +150,7 @@ const UsersPage: React.FC = () => {
                 <TableHead>Name</TableHead>
                 <TableHead>Contact</TableHead>
                 <TableHead>Role</TableHead>
-                <TableHead>Branch</TableHead>
+                <TableHead>Garage</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -189,7 +189,7 @@ const UsersPage: React.FC = () => {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <FiMapPin className="text-green-500" />
-                      {user.branch?.name || "N/A"}
+                      {user.garage?.name || "N/A"}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -266,7 +266,7 @@ const UsersPage: React.FC = () => {
                 </span>
               </p>
               <p>
-                <strong>Branch:</strong> {selectedUser.branch?.name || "N/A"}
+                <strong>Branch:</strong> {selectedUser.garage?.name || "N/A"}
               </p>
             </div>
           )}

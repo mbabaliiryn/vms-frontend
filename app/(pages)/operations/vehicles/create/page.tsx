@@ -339,7 +339,11 @@ const CreateVehiclePage: React.FC = () => {
           />
         </div>
 
-        <Button type="submit" disabled={loading} className="w-full col-span-2">
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full col-span-2 bg-orange-500 hover:bg-orange-600"
+        >
           {loading ? "Creating..." : "Create Vehicle"}
         </Button>
       </form>

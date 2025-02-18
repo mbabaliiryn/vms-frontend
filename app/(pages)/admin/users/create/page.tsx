@@ -204,7 +204,11 @@ const AddUserPage = () => {
                 <p className="text-red-500 text-sm">{errors.garageId}</p>
               )}
 
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button
+                type="submit"
+                className="w-full bg-orange-500 hover:bg-orange-600"
+                disabled={loading}
+              >
                 {loading ? "Adding..." : "Add User"}
               </Button>
             </form>

@@ -308,7 +308,7 @@ const EditVehiclePage: React.FC = () => {
         )}
         <Button
           onClick={handleUpdate}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600"
           disabled={loading}
         >
           <FaSave /> {loading ? "Please Wait..." : "Save Changes"}

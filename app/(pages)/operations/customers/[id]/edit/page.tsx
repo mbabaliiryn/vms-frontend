@@ -236,7 +236,10 @@ const EditCustomerPage: React.FC = () => {
           >
             Cancel
           </Button>
-          <Button onClick={handleUpdate} className="flex items-center gap-2">
+          <Button
+            onClick={handleUpdate}
+            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600"
+          >
             <FaSave /> {loading ? "Please Wait..." : "Save Changes"}
           </Button>
         </div>

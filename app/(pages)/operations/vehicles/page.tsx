@@ -125,7 +125,7 @@ const VehiclesPage: React.FC = () => {
         <h1 className="text-2xl font-semibold">Vehicles</h1>
         <Button
           onClick={() => router.push("/operations/vehicles/create")}
-          className="px-4 py-2"
+          className="px-4 py-2 bg-orange-500 hover:bg-orange-600"
         >
           + Add Vehicle
         </Button>

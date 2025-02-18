@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -298,7 +299,7 @@ const CreateGarageInspectionChecklistPage = () => {
           </Button>
         ) : (
           <Button
-            className="bg-orange-500"
+            className=" bg-orange-500 hover:bg-orange-600"
             disabled={loading}
             onClick={handleSubmit}
           >

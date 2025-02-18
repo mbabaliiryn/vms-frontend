@@ -302,7 +302,7 @@ const InspectionChecklistPage = () => {
           <Button
             disabled={loading}
             onClick={handleSubmit}
-            className="bg-green-600 hover:bg-green-700"
+            className=" bg-orange-500 hover:bg-orange-600"
           >
             {loading ? "Submitting..." : "Submit Inspection"}
           </Button>

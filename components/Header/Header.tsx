@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import {
   FiMenu,
-  FiUser,
-  FiSettings,
-  FiHelpCircle,
+  // FiUser,
+  // FiSettings,
+  // FiHelpCircle,
   FiLogOut,
   FiSearch,
 } from "react-icons/fi";
@@ -100,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen, sidebarOpen }) => {
               <div className="p-3 text-sm font-medium text-gray-600 border-b border-gray-100">
                 {user?.phoneNumber}
               </div>
-              <DropdownMenuItem className="mt-1 cursor-pointer rounded-lg p-2.5 text-gray-600 transition-colors duration-200 hover:bg-orange-50 hover:text-orange-500">
+              {/* <DropdownMenuItem className="mt-1 cursor-pointer rounded-lg p-2.5 text-gray-600 transition-colors duration-200 hover:bg-orange-50 hover:text-orange-500">
                 <FiUser className="mr-2" size={16} /> Profile
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer rounded-lg p-2.5 text-gray-600 transition-colors duration-200 hover:bg-orange-50 hover:text-orange-500">
@@ -108,7 +108,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen, sidebarOpen }) => {
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer rounded-lg p-2.5 text-gray-600 transition-colors duration-200 hover:bg-orange-50 hover:text-orange-500">
                 <FiHelpCircle className="mr-2" size={16} /> Help & Support
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuSeparator className="my-1 bg-gray-100" />
               <DropdownMenuItem
                 className="cursor-pointer rounded-lg p-2.5 text-red-500 transition-colors duration-200 hover:bg-red-50"

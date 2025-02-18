@@ -279,12 +279,17 @@ const CreateGaragePage = () => {
                   onCheckedChange={(checked) =>
                     formik.setFieldValue("isActive", checked)
                   }
+                  className="bg-orange-500"
                 />
                 <Label>{formik.values.isActive ? "Active" : "Inactive"}</Label>
               </div>
 
               <div className="mt-6">
-                <Button type="submit" className="w-full" disabled={submitting}>
+                <Button
+                  type="submit"
+                  className="w-full  bg-orange-500 hover:bg-orange-600"
+                  disabled={submitting}
+                >
                   {submitting ? "Submitting..." : "Create Garage"}
                 </Button>
               </div>

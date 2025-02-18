@@ -238,7 +238,11 @@ const CreateCustomerPage: React.FC = () => {
           )}
         </div>
 
-        <Button type="submit" disabled={loading} className="w-full">
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full  bg-orange-500 hover:bg-orange-600"
+        >
           {loading ? "Creating..." : "Create Customer"}
         </Button>
       </form>
