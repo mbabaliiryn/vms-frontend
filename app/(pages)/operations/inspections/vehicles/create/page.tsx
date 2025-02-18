@@ -196,7 +196,7 @@ const InspectionChecklistPage = () => {
             newErrors[error.path] = error.message;
           }
         });
-        toast.error("Customer creation failed", {
+        toast.error("Inspection creation failed", {
           description: "Please fix the errors in the form.",
         });
       } else if (axios.isAxiosError(err) && err.response) {
@@ -207,17 +207,17 @@ const InspectionChecklistPage = () => {
           success?: boolean;
         };
 
-        toast.error("Customer creation failed", {
+        toast.error("Inspection creation failed", {
           description: apiError.message || "An unknown error occurred.",
         });
       } else if (typeof err === "object" && err !== null && "message" in err) {
         const errorObj = err as { message: string; success?: boolean };
 
-        toast.error("Customer creation failed", {
+        toast.error("Inspection creation failed", {
           description: errorObj.message || "An unknown error occurred.",
         });
       } else {
-        toast.error("Customer creation failed", {
+        toast.error("Inspection creation failed", {
           description: "An unexpected error occurred.",
         });
       }

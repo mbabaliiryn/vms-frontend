@@ -192,7 +192,7 @@ export interface CreateVehicleInspectionChecklistInput {
   garageId: string;
   inspectorId: string;
   checklist: InspectionChecklist;
-  lastInspectionDate?: string;
+  lastInspectionDate?: Date;
 }
 
 export interface CreateGarageInspectionChecklistInput {
@@ -200,7 +200,7 @@ export interface CreateGarageInspectionChecklistInput {
   inspectorId: string;
   checklist: GarageInspectionChecklist;
   notes?: string;
-  lastInspectionDate?: string;
+  lastInspectionDate?: Date;
 }
 
 export interface UpdateVehicleInspectionChecklistInput {

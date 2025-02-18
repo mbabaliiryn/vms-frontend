@@ -128,7 +128,7 @@ const GarageInspectionsPage: React.FC = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Garage Inspections</h1>
         <Button
-          onClick={() => router.push("/operations/garage-inspections/create")}
+          onClick={() => router.push("/operations/inspections/garages/create")}
           className="px-4 py-2"
         >
           + Add Inspection
