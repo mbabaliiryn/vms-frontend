@@ -39,7 +39,6 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ data, onChange }) => {
     const fetchGarages = async () => {
       try {
         const garageRes = (await garageApi.getGarages()) as ApiResponse<Garage>;
-
         if (garageRes.success) setGarages(garageRes.data);
       } catch (err) {
         if (axios.isAxiosError(err)) {
@@ -57,9 +56,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ data, onChange }) => {
   }, []);
 
   useEffect(() => {
-    if (user?.id && !data.inspectorId) {
-      onChange("inspectorId", user.id);
-    }
+    if (user?.id && !data.inspectorId) onChange("inspectorId", user.id);
   }, [user, data.inspectorId, onChange]);
 
   return (

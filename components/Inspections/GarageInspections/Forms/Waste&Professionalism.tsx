@@ -32,14 +32,43 @@ interface WasteManagementProfessionalismFormProps {
 const WasteManagementProfessionalismForm: React.FC<
   WasteManagementProfessionalismFormProps
 > = ({ data, onChange }) => {
+  const renderRadioGroup = (
+    section: string,
+    field: string,
+    label: string,
+    value: boolean
+  ) => (
+    <div key={field} className="flex items-center justify-between">
+      <Label className="text-sm w-1/2">{label}</Label>
+      <RadioGroup
+        value={value ? "yes" : "no"}
+        onValueChange={(val) => onChange(`${section}.${field}`, val === "yes")}
+        className="flex gap-4 w-1/2 justify-end"
+      >
+        <div className="flex items-center gap-2">
+          <RadioGroupItem value="yes" id={`${field}-yes`} className="h-4 w-4" />
+          <Label htmlFor={`${field}-yes`} className="text-sm">
+            Yes
+          </Label>
+        </div>
+        <div className="flex items-center gap-2">
+          <RadioGroupItem value="no" id={`${field}-no`} className="h-4 w-4" />
+          <Label htmlFor={`${field}-no`} className="text-sm">
+            No
+          </Label>
+        </div>
+      </RadioGroup>
+    </div>
+  );
+
   return (
-    <div className="space-y-6">
-      {/* Waste Management & Environment */}
-      <div>
-        <h2 className="text-lg font-semibold">
-          Waste Management & Environment
-        </h2>
-        <div className="space-y-4 mt-2">
+    <div className="space-y-4 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-10">
+      <div className="grid grid-cols-2 gap-12">
+        {/* Waste Management & Environment */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold border-b pb-2">
+            Waste Management & Environment
+          </h2>
           {[
             {
               label: "Biodegradable Waste Bin",
@@ -55,39 +84,20 @@ const WasteManagementProfessionalismForm: React.FC<
               label: "General Hygiene Sanitation",
               field: "generalHygieneSanitation",
             },
-          ].map(({ label, field }) => (
-            <div key={field}>
-              <Label>{label}</Label>
-              <RadioGroup
-                value={
-                  data.wasteManagementEnvironment[
-                    field as keyof typeof data.wasteManagementEnvironment
-                  ]
-                    ? "yes"
-                    : "no"
-                }
-                onValueChange={(value) =>
-                  onChange(
-                    `wasteManagementEnvironment.${field}`,
-                    value === "yes"
-                  )
-                }
-                className="flex gap-4"
-              >
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="yes" id={`${field}-yes`} />
-                  <Label htmlFor={`${field}-yes`}>Yes</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="no" id={`${field}-no`} />
-                  <Label htmlFor={`${field}-no`}>No</Label>
-                </div>
-              </RadioGroup>
-            </div>
-          ))}
-
+          ].map(({ label, field }) =>
+            renderRadioGroup(
+              "wasteManagementEnvironment",
+              field,
+              label,
+              Boolean(
+                data.wasteManagementEnvironment[
+                  field as keyof typeof data.wasteManagementEnvironment
+                ]
+              )
+            )
+          )}
           <div>
-            <Label>Other Waste Measures (if any)</Label>
+            <Label className="text-sm">Other Waste Measures (if any)</Label>
             <Input
               type="text"
               placeholder="Enter other waste measures..."
@@ -98,15 +108,16 @@ const WasteManagementProfessionalismForm: React.FC<
                   e.target.value
                 )
               }
+              className="mt-2 h-10 text-sm py-2 w-full"
             />
           </div>
         </div>
-      </div>
 
-      {/* Professionalism */}
-      <div>
-        <h2 className="text-lg font-semibold">Professionalism</h2>
-        <div className="space-y-4 mt-2">
+        {/* Professionalism */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold border-b pb-2">
+            Professionalism
+          </h2>
           {[
             { label: "Qualified Staff", field: "qualifiedStaff" },
             { label: "Apprentices", field: "apprentices" },
@@ -118,36 +129,20 @@ const WasteManagementProfessionalismForm: React.FC<
               label: "Business Group Membership",
               field: "businessGroupMembership",
             },
-          ].map(({ label, field }) => (
-            <div key={field}>
-              <Label>{label}</Label>
-              <RadioGroup
-                value={
-                  data.professionalism[
-                    field as keyof typeof data.professionalism
-                  ]
-                    ? "yes"
-                    : "no"
-                }
-                onValueChange={(value) =>
-                  onChange(`professionalism.${field}`, value === "yes")
-                }
-                className="flex gap-4"
-              >
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="yes" id={`${field}-yes`} />
-                  <Label htmlFor={`${field}-yes`}>Yes</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="no" id={`${field}-no`} />
-                  <Label htmlFor={`${field}-no`}>No</Label>
-                </div>
-              </RadioGroup>
-            </div>
-          ))}
-
+          ].map(({ label, field }) =>
+            renderRadioGroup(
+              "professionalism",
+              field,
+              label,
+              Boolean(
+                data.professionalism[field as keyof typeof data.professionalism]
+              )
+            )
+          )}
           <div>
-            <Label>Other Professional Measures (if any)</Label>
+            <Label className="text-sm">
+              Other Professional Measures (if any)
+            </Label>
             <Input
               type="text"
               placeholder="Enter other professional measures..."
@@ -158,6 +153,7 @@ const WasteManagementProfessionalismForm: React.FC<
                   e.target.value
                 )
               }
+              className="mt-2 h-10 text-sm py-2 w-full"
             />
           </div>
         </div>

@@ -8,7 +8,7 @@ import { inspectionsApi } from "@/app/api";
 import BasicInfoForm from "@/components/Inspections/GarageInspections/Forms/BasicInfo";
 import GarageSecurityToolsForm from "@/components/Inspections/GarageInspections/Forms/GarageSecurityTools";
 import StatutoryRequirementsLocationPremisesForm from "@/components/Inspections/GarageInspections/Forms/StatutoryLocation";
-import GarageFacilitiesSafetyAndHealthForm from "@/components/Inspections/GarageInspections/Forms/GarageSecurityTools";
+import GarageFacilitiesSafetyAndHealthForm from "@/components/Inspections/GarageInspections/Forms/Garage&Safety";
 import WasteManagementProfessionalismForm from "@/components/Inspections/GarageInspections/Forms/Waste&Professionalism";
 import { CreateGarageInspectionChecklistInput } from "@/types";
 import axios from "axios";
