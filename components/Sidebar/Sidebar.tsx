@@ -34,116 +34,159 @@ interface MenuItem {
   label: string;
   route?: string;
   children?: MenuItem[];
+  roles?: string[];
 }
 
-const menuGroups: { name: string; menuItems: MenuItem[] }[] = [
-  {
-    name: "MAIN MENU",
-    menuItems: [
-      {
-        icon: <FiHome size={18} />,
-        label: "Dashboard",
-        route: "/dashboard",
-      },
-    ],
-  },
-  {
-    name: "ADMINISTRATION",
-    menuItems: [
-      {
-        icon: <FiUsers size={18} />,
-        label: "Users",
-        children: [
-          {
-            icon: <FiList size={16} />,
-            label: "All Users",
-            route: "/admin/users",
-          },
-          {
-            icon: <FiUserPlus size={16} />,
-            label: "Add User",
-            route: "/admin/users/create",
-          },
-        ],
-      },
-      {
-        icon: <FiDatabase size={18} />,
-        label: "Garages",
-        children: [
-          {
-            icon: <FiMapPin size={16} />,
-            label: "All Garages",
-            route: "/admin/garages",
-          },
-          {
-            icon: <FiPlusCircle size={16} />,
-            label: "Add Garage",
-            route: "/admin/garages/create",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: "BUSINESS OPERATIONS",
-    menuItems: [
-      {
-        icon: <FiBriefcase size={18} />,
-        label: "Customers",
-        route: "/operations/customers",
-      },
-      {
-        icon: <FiTruck size={18} />,
-        label: "Vehicles",
-        route: "/operations/vehicles",
-      },
-      {
-        icon: <FiClipboard size={18} />,
-        label: "Inspections",
-        children: [
-          {
-            icon: <FiTool size={16} />,
-            label: "Vehicle Inspections",
-            children: [
-              {
-                icon: <FiList size={16} />,
-                label: "All Inspections",
-                route: "/operations/inspections/vehicles",
-              },
-              {
-                icon: <FiFileText size={16} />,
-                label: "New Inspection",
-                route: "/operations/inspections/vehicles/create",
-              },
-            ],
-          },
-          {
-            icon: <FiActivity size={16} />,
-            label: "Garage Inspections",
-            children: [
-              {
-                icon: <FiList size={16} />,
-                label: "All Inspections",
-                route: "/operations/inspections/garages",
-              },
-              {
-                icon: <FiFileText size={16} />,
-                label: "New Inspection",
-                route: "/operations/inspections/garages/create",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-];
+const createMenuGroups = (userRole: string) => {
+  const menuGroups: { name: string; menuItems: MenuItem[] }[] = [
+    {
+      name: "MAIN MENU",
+      menuItems: [
+        {
+          icon: <FiHome size={18} />,
+          label: "Dashboard",
+          route: "/dashboard",
+          roles: ["ADMIN", "INSPECTOR", "MECHANIC"],
+        },
+      ],
+    },
+    {
+      name: "ADMINISTRATION",
+      menuItems: [
+        {
+          icon: <FiUsers size={18} />,
+          label: "Users",
+          roles: ["ADMIN"],
+          children: [
+            {
+              icon: <FiList size={16} />,
+              label: "All Users",
+              route: "/admin/users",
+              roles: ["ADMIN"],
+            },
+            {
+              icon: <FiUserPlus size={16} />,
+              label: "Add User",
+              route: "/admin/users/create",
+              roles: ["ADMIN"],
+            },
+          ],
+        },
+        {
+          icon: <FiDatabase size={18} />,
+          label: "Garages",
+          roles: ["ADMIN"],
+          children: [
+            {
+              icon: <FiMapPin size={16} />,
+              label: "All Garages",
+              route: "/admin/garages",
+              roles: ["ADMIN"],
+            },
+            {
+              icon: <FiPlusCircle size={16} />,
+              label: "Add Garage",
+              route: "/admin/garages/create",
+              roles: ["ADMIN"],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: "BUSINESS OPERATIONS",
+      menuItems: [
+        {
+          icon: <FiBriefcase size={18} />,
+          label: "Customers",
+          route: "/operations/customers",
+          roles: ["ADMIN", "INSPECTOR", "MECHANIC"],
+        },
+        {
+          icon: <FiTruck size={18} />,
+          label: "Vehicles",
+          route: "/operations/vehicles",
+          roles: ["ADMIN", "INSPECTOR", "MECHANIC"],
+        },
+        {
+          icon: <FiClipboard size={18} />,
+          label: "Inspections",
+          roles: ["ADMIN", "INSPECTOR"],
+          children: [
+            {
+              icon: <FiTool size={16} />,
+              label: "Vehicle Inspections",
+              roles: ["ADMIN", "INSPECTOR"],
+              children: [
+                {
+                  icon: <FiList size={16} />,
+                  label: "All Inspections",
+                  route: "/operations/inspections/vehicles",
+                  roles: ["ADMIN", "INSPECTOR"],
+                },
+                {
+                  icon: <FiFileText size={16} />,
+                  label: "New Inspection",
+                  route: "/operations/inspections/vehicles/create",
+                  roles: ["ADMIN", "INSPECTOR"],
+                },
+              ],
+            },
+            {
+              icon: <FiActivity size={16} />,
+              label: "Garage Inspections",
+              roles: ["ADMIN", "INSPECTOR"],
+              children: [
+                {
+                  icon: <FiList size={16} />,
+                  label: "All Inspections",
+                  route: "/operations/inspections/garages",
+                  roles: ["ADMIN", "INSPECTOR"],
+                },
+                {
+                  icon: <FiFileText size={16} />,
+                  label: "New Inspection",
+                  route: "/operations/inspections/garages/create",
+                  roles: ["ADMIN", "INSPECTOR"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  return menuGroups
+    .map((group) => ({
+      ...group,
+      menuItems: group.menuItems.filter((item) => {
+        const hasAccess = item.roles?.includes(userRole);
+
+        if (item.children) {
+          item.children = item.children.filter((child) => {
+            if (child.children) {
+              child.children = child.children.filter((grandChild) =>
+                grandChild.roles?.includes(userRole)
+              );
+            }
+            return child.roles?.includes(userRole);
+          });
+        }
+
+        return hasAccess;
+      }),
+    }))
+    .filter((group) => group.menuItems.length > 0);
+};
 
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const [openDropdowns, setOpenDropdowns] = useLocalStorage<
     Record<string, boolean>
   >("openDropdowns", {});
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+
+  const menuGroups = createMenuGroups(user?.role || "");
 
   const handleLogout = () => {
     logout();
@@ -220,7 +263,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           </nav>
         </div>
 
-        {/* Logout Section */}
         <div className="border-t border-gray-100 bg-gray-50 p-6">
           <button
             className="flex w-full items-center justify-center gap-3 rounded-lg bg-orange-50 px-4 py-2.5 text-orange-600 transition-all hover:bg-orange-500 hover:text-white hover:shadow-md active:transform active:scale-95"

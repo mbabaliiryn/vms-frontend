@@ -86,6 +86,7 @@ const UsersPage: React.FC = () => {
 
   const handleDeleteUser = async (userId: string) => {
     setLoading(true);
+
     try {
       const response = (await authApi.deleteUser(userId)) as DeleteResponse;
       if (response.success) {

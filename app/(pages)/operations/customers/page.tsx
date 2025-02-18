@@ -30,6 +30,7 @@ import { Customer } from "@/types";
 import axios from "axios";
 import Spinner from "@/components/Spinner/Spinner";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export interface ApiResponse {
   success: boolean;
@@ -52,6 +53,7 @@ const CustomersPage: React.FC = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 
   const router = useRouter();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -200,16 +202,18 @@ const CustomersPage: React.FC = () => {
                           >
                             <FaEdit className="text-green-500" /> Edit
                           </Button>
-                          <Button
-                            variant="ghost"
-                            className="flex items-center gap-2 text-red-600 hover:bg-red-100 px-3 py-2 rounded-md transition"
-                            onClick={() => {
-                              setSelectedCustomer(customer);
-                              setIsDeleteDialogOpen(true);
-                            }}
-                          >
-                            <FaTrash className="text-red-500" /> Delete
-                          </Button>
+                          {user && user.role === "ADMIN" && (
+                            <Button
+                              variant="ghost"
+                              className="text-red-600"
+                              onClick={() => {
+                                setSelectedCustomer(customer);
+                                setIsDeleteDialogOpen(true);
+                              }}
+                            >
+                              <FaTrash className="text-red-500" /> Delete
+                            </Button>
+                          )}
                         </div>
                       </PopoverContent>
                     </Popover>
