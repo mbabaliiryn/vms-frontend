@@ -288,7 +288,7 @@ const LoginPage = () => {
               </motion.div>
             </form>
 
-            <motion.p
+            {/* <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -301,7 +301,7 @@ const LoginPage = () => {
               >
                 Sign up
               </span>
-            </motion.p>
+            </motion.p> */}
           </div>
         </div>
       </motion.div>
