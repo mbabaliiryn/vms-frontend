@@ -269,9 +269,19 @@ const CreateGarageInspectionChecklistPage = () => {
       {step === 5 && (
         <GarageSecurityToolsForm
           data={checklistData.checklist}
-          onChange={(field, value) =>
-            handleChange("garageSecurity", field, value)
-          }
+          onChange={(field, value) => {
+            if (field === "otherRemarks") {
+              setChecklistData((prev) => ({
+                ...prev,
+                checklist: {
+                  ...prev.checklist,
+                  otherRemarks: value as string,
+                },
+              }));
+            } else {
+              handleChange("garageSecurity", field, value);
+            }
+          }}
         />
       )}
 
@@ -283,10 +293,16 @@ const CreateGarageInspectionChecklistPage = () => {
           </Button>
         )}
         {step < 5 ? (
-          <Button onClick={handleNext}>Next</Button>
+          <Button className="bg-orange-500" onClick={handleNext}>
+            Next
+          </Button>
         ) : (
-          <Button disabled={loading} onClick={handleSubmit}>
-            Submit Inspection Checklist
+          <Button
+            className="bg-orange-500"
+            disabled={loading}
+            onClick={handleSubmit}
+          >
+            {loading ? "Submitting..." : "Submit Checklist"}
           </Button>
         )}
       </div>
